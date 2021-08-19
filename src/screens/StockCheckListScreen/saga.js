@@ -16,7 +16,7 @@ import {
 } from '../LoginScreen';
 
 export function* submitCheckList({ payload }) {
-  const { clId, itemId } = payload;
+  const { clId, itemId, isDefault = false } = payload;
   let { data } = payload;
   try {
     yield delay(0);
@@ -26,9 +26,7 @@ export function* submitCheckList({ payload }) {
       loginSelectors.makeSelectAuthorization(),
     );
 
-    if (!clId) {
-      formData.append('data', JSON.stringify(data));
-    } else {
+    if (isDefault) {
       const currentCl = yield select(selectors.makeSelectCheckListById(clId));
       const { template } = currentCl;
       data = mapValues(template, (o) => {
@@ -40,8 +38,8 @@ export function* submitCheckList({ payload }) {
         }
         return '';
       });
-      formData.append('data', JSON.stringify(data));
     }
+    formData.append('data', JSON.stringify(data));
 
     const res = yield call(API.submitCheckListItemData, {
       itemId,
@@ -49,7 +47,7 @@ export function* submitCheckList({ payload }) {
       authorization,
     });
 
-    yield put(actions.submitSuccess({ itemId, data }));
+    yield put(actions.submitSuccess({ clId, itemId, data }));
     yield put(loginActions.updateAuthorization(res.headers.authorization));
   } catch (error) {
     console.log('function*submitCheckList -> error', error);

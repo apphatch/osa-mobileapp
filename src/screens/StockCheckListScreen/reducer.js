@@ -39,7 +39,28 @@ function submit(state, action) {
 function submitSuccess(state, action) {
   state.isLoading = false;
   state.isSubmitted = true;
-  const { itemId, data } = action.payload;
+  const { clId, itemId, data } = action.payload;
+  state.checkList = state.checkList.map((cl) => {
+    if (cl.id === clId) {
+      cl.checklist_items = cl.checklist_items.map((item) => {
+        if (item.id === itemId) {
+          return {
+            ...item,
+            data,
+          };
+        }
+        return item;
+      });
+      const filterCompleted = cl.checklist_items.filter(
+        (item) => item.data === null || item.data === {},
+      );
+      return {
+        ...cl,
+        completed: filterCompleted.length > 0 ? false : true,
+      };
+    }
+    return cl;
+  });
   state.stocks = state.stocks.map((stock) => {
     if (stock.id === itemId) {
       return {

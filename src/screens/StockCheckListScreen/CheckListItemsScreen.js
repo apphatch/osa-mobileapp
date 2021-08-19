@@ -84,7 +84,9 @@ const CheckListItemsScreen = ({ navigation, route }) => {
 
   const onSubmitCheckList = React.useCallback(
     (item) => {
-      dispatch(actions.submit({ clId, itemId: item.id, data: item }));
+      dispatch(
+        actions.submit({ isDefault: true, clId, itemId: item.id, data: item }),
+      );
     },
     [dispatch, clId],
   );
@@ -173,8 +175,7 @@ const CheckListItemsScreen = ({ navigation, route }) => {
 
   const _onPressGoBack = React.useCallback(() => {
     navigation.goBack();
-    dispatch(actions.fetchCheckList({ shopId }));
-  }, [navigation, dispatch, shopId]);
+  }, [navigation]);
 
   const showDialog = () => setVisibleFilter(true);
 

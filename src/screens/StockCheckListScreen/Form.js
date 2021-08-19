@@ -94,9 +94,9 @@ const StockCheckListScreen = ({ navigation, route }) => {
 
   const onSubmitCheckList = React.useCallback(
     (values) => {
-      dispatch(actions.submit({ clId: null, itemId, data: values }));
+      dispatch(actions.submit({ clId, itemId, data: values }));
     },
-    [dispatch, itemId],
+    [dispatch, itemId, clId],
   );
 
   const isOOS = clType.toLowerCase() === 'oos';
